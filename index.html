@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажер: Члени речення (Головні та другорядні)</title>
+    <title>Інтерактивний тренажер з української мови</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4f46e5;
+            --primary-hover: #4338ca;
             --primary-light: #eef2ff;
             --success: #10b981;
             --success-light: #ecfdf5;
             --danger: #ef4444;
             --danger-light: #fef2f2;
-            --neutral-dark: #1e293b;
+            --neutral-dark: #0f172a;
             --neutral-muted: #64748b;
             --card-bg: #ffffff;
             --body-bg: #f8fafc;
             --border-color: #e2e8f0;
-            --radius: 16px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
         }
 
@@ -35,24 +37,26 @@
             background-color: var(--body-bg);
             color: var(--neutral-dark);
             line-height: 1.6;
-            padding: 24px 16px;
+            padding: 24px 16px 48px;
         }
 
         .container {
-            max-width: 820px;
+            max-width: 880px;
             margin: 0 auto;
         }
 
+        /* Шапка сайту */
         header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         header h1 {
-            font-size: 2rem;
+            font-size: 2.1rem;
             font-weight: 800;
+            letter-spacing: -0.03em;
             color: var(--neutral-dark);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         header p {
@@ -60,75 +64,158 @@
             font-size: 1rem;
         }
 
-        /* Довідкова таблиця / картки */
-        .reference-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+        /* Перемикач тем (Вкладки) */
+        .tabs-nav {
+            display: flex;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: 14px;
+            gap: 6px;
             margin-bottom: 28px;
         }
 
-        .reference-card h2 {
-            font-size: 1.25rem;
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
             font-weight: 700;
+            color: var(--neutral-muted);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Блоки контенту */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Довідкові картки */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
             margin-bottom: 16px;
+            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary);
         }
 
-        .rules-grid {
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
 
-        @media (max-width: 680px) {
-            .rules-grid {
+        @media (max-width: 720px) {
+            .grid-2 {
                 grid-template-columns: 1fr;
             }
         }
 
-        .rule-group {
+        .rule-item {
             background: #f8fafc;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 16px;
             border-left: 4px solid var(--primary);
         }
 
-        .rule-group h3 {
+        .rule-item h3 {
             font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-weight: 800;
+            margin-bottom: 8px;
             color: var(--neutral-dark);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .rule-group ul {
+        .rule-item ul {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            font-size: 0.88rem;
         }
 
-        .rule-group li {
-            font-size: 0.88rem;
+        /* Чіпи та пари слів */
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .word-pair {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.86rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .word-pair span:first-child {
+            font-weight: 700;
             color: #334155;
         }
 
-        .rule-group strong {
-            color: #0f172a;
+        .word-pair span:last-child {
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        /* Блок тесту */
-        .test-wrapper {
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Тестовий блок */
+        .quiz-card {
             background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 32px;
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
         }
@@ -139,7 +226,7 @@
             align-items: center;
             margin-bottom: 12px;
             font-size: 0.85rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--neutral-muted);
             text-transform: uppercase;
         }
@@ -157,14 +244,15 @@
             height: 100%;
             width: 0%;
             background-color: var(--primary);
-            transition: width 0.3s ease;
+            transition: width 0.35s ease;
         }
 
         .question-title {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--neutral-dark);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
+            line-height: 1.45;
         }
 
         .question-title .highlight {
@@ -190,7 +278,7 @@
             padding: 14px 18px;
             border: 1.5px solid var(--border-color);
             background-color: #ffffff;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 0.95rem;
             font-weight: 600;
             color: var(--neutral-dark);
@@ -219,12 +307,11 @@
             border-radius: 8px;
             background: #f1f5f9;
             color: #475569;
-            font-weight: 700;
+            font-weight: 800;
             flex-shrink: 0;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
 
-        /* Стани відповідей */
         .btn-answer.correct {
             border-color: var(--success);
             background-color: var(--success-light);
@@ -250,16 +337,11 @@
         /* Пояснення */
         .feedback-box {
             padding: 16px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 0.95rem;
             margin-bottom: 20px;
             display: none;
             animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .feedback-box.correct {
@@ -293,28 +375,28 @@
         }
 
         .btn-next:hover {
-            background-color: #4338ca;
+            background-color: var(--primary-hover);
             transform: translateY(-1px);
         }
 
         /* Результати */
         .results-view {
             text-align: center;
-            padding: 20px 0;
+            padding: 24px 0;
             display: none;
         }
 
         .results-score {
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-weight: 800;
             color: var(--primary);
             margin: 12px 0;
         }
 
         .results-desc {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: var(--neutral-muted);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .btn-restart {
@@ -330,7 +412,7 @@
         }
 
         .btn-restart:hover {
-            background-color: #4338ca;
+            background-color: var(--primary-hover);
         }
     </style>
 </head>
@@ -338,178 +420,411 @@
 
 <div class="container">
     <header>
-        <h1>Граматичний тренажер</h1>
-        <p>Головні та другорядні члени речення</p>
+        <h1>Граматичний та лексичний тренажер</h1>
+        <p>Оберіть розділ мови для повторення теорії та тестування</p>
     </header>
 
-    <!-- Довідковий блок -->
-    <div class="reference-card">
-        <h2>📚 Довідкова таблиця</h2>
-        <div class="rules-grid">
-            <div class="rule-group">
-                <h3>Головні члени</h3>
-                <ul>
-                    <li><strong>Підмет:</strong> <em>хто? що?</em></li>
-                    <li><strong>Присудок:</strong> <em>що робить підмет? що з ним робиться? який він є? що він таке?</em></li>
-                </ul>
+    <!-- Навігація по темах -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('syntax')">📌 Члени речення</button>
+        <button class="tab-btn" onclick="switchTab('lexicology')">📖 Запозичені слова та застаріла лексика</button>
+    </div>
+
+    <!-- ТЕМА 1: ЧЛЕНИ РЕЧЕННЯ -->
+    <div id="tab-syntax" class="tab-content active">
+        <div class="card">
+            <h2>📚 Довідкова таблиця: Члени речення</h2>
+            <div class="grid-2">
+                <div class="rule-item">
+                    <h3>Головні члени</h3>
+                    <ul>
+                        <li><strong>Підмет:</strong> <em>хто? що?</em></li>
+                        <li><strong>Присудок:</strong> <em>що робить підмет? що з ним робиться? який він є? що він таке?</em></li>
+                    </ul>
+                </div>
+                <div class="rule-item">
+                    <h3>Другорядні члени</h3>
+                    <ul>
+                        <li><strong>Означення:</strong> <em>який? чий? котрий?</em></li>
+                        <li><strong>Обставина:</strong> <em>як? де? куди? звідки? коли? чому?</em></li>
+                        <li><strong>Додаток:</strong> питання відмінків, крім називного (<em>кого? чого? кому? чому? ким? чим? на кому? на чому?</em>)</li>
+                    </ul>
+                </div>
             </div>
-            <div class="rule-group">
-                <h3>Другорядні члени</h3>
-                <ul>
-                    <li><strong>Означення:</strong> <em>який? чий? котрий?</em></li>
-                    <li><strong>Обставина:</strong> <em>як? де? куди? звідки? коли? чому?</em></li>
-                    <li><strong>Додаток:</strong> питання відмінків, крім називного (<em>кого? чого? кому? чому? ким? чим? на кому? на чому?</em>)</li>
-                </ul>
+        </div>
+
+        <div class="quiz-card">
+            <div id="quiz-syntax">
+                <div class="progress-header">
+                    <span id="counter-syntax">Запитання 1 з 8</span>
+                    <span id="score-syntax">Бал: 0</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="bar-syntax"></div>
+                </div>
+
+                <div class="question-title" id="qtext-syntax">...</div>
+                <div class="answers-grid" id="options-syntax"></div>
+                <div class="feedback-box" id="feedback-syntax"></div>
+
+                <div class="action-container">
+                    <button class="btn-next" id="btn-next-syntax" onclick="nextQuestion('syntax')">Наступне запитання →</button>
+                </div>
+            </div>
+
+            <div class="results-view" id="results-syntax">
+                <h2>Модуль завершено! 🎉</h2>
+                <div class="results-score" id="final-score-syntax">0 / 8</div>
+                <div class="results-desc" id="final-desc-syntax"></div>
+                <button class="btn-restart" onclick="restartQuiz('syntax')">Пройти знову</button>
             </div>
         </div>
     </div>
 
-    <!-- Інтерактивний тест -->
-    <div class="test-wrapper">
-        <div id="quiz-container">
-            <div class="progress-header">
-                <span id="question-counter">Запитання 1 з 8</span>
-                <span id="score-counter">Бал: 0</span>
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-
-            <div class="question-title" id="question-text">
-                Завантаження запитання...
-            </div>
-
-            <div class="answers-grid" id="answers-container">
-                <!-- Кнопки генеруються за допомогою JS -->
-            </div>
-
-            <div class="feedback-box" id="feedback"></div>
-
-            <div class="action-container">
-                <button class="btn-next" id="btn-next" onclick="nextQuestion()">Наступне запитання →</button>
+    <!-- ТЕМА 2: ЛЕКСИКОЛОГІЯ -->
+    <div id="tab-lexicology" class="tab-content">
+        <div class="card">
+            <h2>📚 Довідник: Запозичені слова та їх питомі відповідники</h2>
+            <div class="words-grid">
+                <div class="word-pair"><span>консенсус</span> <span>згода</span></div>
+                <div class="word-pair"><span>критерій</span> <span>мірило</span></div>
+                <div class="word-pair"><span>куліси</span> <span>лаштунки</span></div>
+                <div class="word-pair"><span>менеджмент</span> <span>управління</span></div>
+                <div class="word-pair"><span>меридіан</span> <span>південник</span></div>
+                <div class="word-pair"><span>полюс</span> <span>бігун</span></div>
+                <div class="word-pair"><span>превентивний</span> <span>запобіжний</span></div>
+                <div class="word-pair"><span>прогрес</span> <span>поступ</span></div>
+                <div class="word-pair"><span>процент</span> <span>відсоток</span></div>
+                <div class="word-pair"><span>ранг</span> <span>звання</span></div>
+                <div class="word-pair"><span>раціонально</span> <span>доцільно</span></div>
+                <div class="word-pair"><span>резерв</span> <span>запас</span></div>
+                <div class="word-pair"><span>стенографія</span> <span>скоропис</span></div>
+                <div class="word-pair"><span>сфера</span> <span>царина, ділянка</span></div>
+                <div class="word-pair"><span>тотальний</span> <span>усеосяжний</span></div>
+                <div class="word-pair"><span>тротуар</span> <span>хідник</span></div>
+                <div class="word-pair"><span>фактор</span> <span>чинник</span></div>
+                <div class="word-pair"><span>феномен</span> <span>явище</span></div>
+                <div class="word-pair"><span>фіаско</span> <span>невдача, провал</span></div>
+                <div class="word-pair"><span>фіктивний</span> <span>підробний</span></div>
+                <div class="word-pair"><span>фікція</span> <span>вигадка</span></div>
+                <div class="word-pair"><span>фонтан</span> <span>водограй</span></div>
+                <div class="word-pair"><span>фотокартка</span> <span>світлина</span></div>
+                <div class="word-pair"><span>фундатор</span> <span>засновник</span></div>
             </div>
         </div>
 
-        <!-- Екран завершення -->
-        <div class="results-view" id="results-container">
-            <h2>Тест завершено! 🎉</h2>
-            <div class="results-score" id="final-score">0 / 8</div>
-            <div class="results-desc" id="final-feedback">Чудова спроба!</div>
-            <button class="btn-restart" onclick="restartQuiz()">Пройти знову</button>
+        <div class="card">
+            <h2>📜 Довідник: Застаріла лексика</h2>
+            <div class="grid-2">
+                <div class="rule-item">
+                    <h3>Історизми</h3>
+                    <p style="font-size:0.85rem; color:#475569; margin-bottom:8px;">Назви предметів та явищ, що зникли з плином історії (не мають сучасних синонімів):</p>
+                    <div class="tag-list">
+                        <span class="tag">печеніги</span><span class="tag">смерд</span><span class="tag">князь</span>
+                        <span class="tag">губернатор</span><span class="tag">війт</span><span class="tag">кушнір</span>
+                        <span class="tag">віче</span><span class="tag">пернач</span><span class="tag">куна</span>
+                        <span class="tag">подушне</span><span class="tag">аршин</span><span class="tag">жупан</span><span class="tag">рало</span>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <h3>Архаїзми</h3>
+                    <p style="font-size:0.85rem; color:#475569; margin-bottom:8px;">Застарілі назви понять, які існують і зараз (витіснені іншими словами):</p>
+                    <div class="words-grid" style="max-height: 170px;">
+                        <div class="word-pair"><span>березіль</span> <span>березень</span></div>
+                        <div class="word-pair"><span>всує</span> <span>марно</span></div>
+                        <div class="word-pair"><span>глаголити, ректи</span> <span>говорити</span></div>
+                        <div class="word-pair"><span>град</span> <span>місто</span></div>
+                        <div class="word-pair"><span>гряде</span> <span>іде</span></div>
+                        <div class="word-pair"><span>десниця</span> <span>права рука</span></div>
+                        <div class="word-pair"><span>шуйця</span> <span>ліва рука</span></div>
+                        <div class="word-pair"><span>драгоман</span> <span>перекладач</span></div>
+                        <div class="word-pair"><span>зизгиця</span> <span>зозуля</span></div>
+                        <div class="word-pair"><span>зріти</span> <span>бачити</span></div>
+                        <div class="word-pair"><span>комонник</span> <span>вершник</span></div>
+                        <div class="word-pair"><span>хорогва</span> <span>прапор</span></div>
+                        <div class="word-pair"><span>ланіти</span> <span>щоки</span></div>
+                        <div class="word-pair"><span>лицедій</span> <span>актор</span></div>
+                        <div class="word-pair"><span>перст</span> <span>палець</span></div>
+                        <div class="word-pair"><span>піїт</span> <span>поет</span></div>
+                        <div class="word-pair"><span>пря</span> <span>бій</span></div>
+                        <div class="word-pair"><span>ралець</span> <span>подарунок</span></div>
+                        <div class="word-pair"><span>рамена</span> <span>плечі</span></div>
+                        <div class="word-pair"><span>рать</span> <span>військо</span></div>
+                        <div class="word-pair"><span>тать</span> <span>злодій</span></div>
+                        <div class="word-pair"><span>чадо</span> <span>дитина</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-card">
+            <div id="quiz-lexicology">
+                <div class="progress-header">
+                    <span id="counter-lexicology">Запитання 1 з 16</span>
+                    <span id="score-lexicology">Бал: 0</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="bar-lexicology"></div>
+                </div>
+
+                <div class="question-title" id="qtext-lexicology">...</div>
+                <div class="answers-grid" id="options-lexicology"></div>
+                <div class="feedback-box" id="feedback-lexicology"></div>
+
+                <div class="action-container">
+                    <button class="btn-next" id="btn-next-lexicology" onclick="nextQuestion('lexicology')">Наступне запитання →</button>
+                </div>
+            </div>
+
+            <div class="results-view" id="results-lexicology">
+                <h2>Модуль завершено! 🎉</h2>
+                <div class="results-score" id="final-score-lexicology">0 / 16</div>
+                <div class="results-desc" id="final-desc-lexicology"></div>
+                <button class="btn-restart" onclick="restartQuiz('lexicology')">Пройти знову</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // 5 стандартних варіантів для всіх запитань
-    const defaultOptions = [
-        "Підмет",
-        "Присудок",
-        "Означення",
-        "Обставина",
-        "Додаток"
-    ];
+    // Літери варіантів
+    const letters = ['А', 'Б', 'В', 'Г', 'Д'];
 
-    // Набір питань (теорія + практика)
-    const quizData = [
+    // База питань: Синтаксис (Члени речення)
+    const syntaxQuestions = [
         {
             question: "На які питання відповідає <strong>Додаток</strong>?",
-            correctIndex: 4, // Додаток
-            explanation: "Правильно! Додаток відповідає на питання непрямих відмінків: кого? чого? кому? чому? ким? чим? на кому? на чому?"
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 4,
+            explanation: "Додаток відповідає на питання всіх непрямих відмінків: кого? чого? кому? чому? ким? чим? на кому? на чому?"
         },
         {
             question: "До якого члена речення належать питання <em>«де? куди? звідки? коли? як? чому?»</em>?",
-            correctIndex: 3, // Обставина
-            explanation: "Точно! Питання де? куди? звідки? коли? як? чому? — це питання обставини."
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 3,
+            explanation: "Питання де? куди? звідки? коли? як? чому? характеризують обставину."
         },
         {
             question: "Визначте виділений член речення:<br>«Хлопець читає <span class='highlight'>цікаву</span> книжку».",
-            correctIndex: 2, // Означення
-            explanation: "Книжку (яку?) цікаву. Питання «яку?» вказує на означення."
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 2,
+            explanation: "Книжку (яку?) цікаву. Ознака предмета — означення."
         },
         {
             question: "Визначте виділений член речення:<br>«<span class='highlight'>Сонце</span> яскраво світить над містом».",
-            correctIndex: 0, // Підмет
-            explanation: "(Що?) сонце світить. Сонце — це підмет, що виконує дію."
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 0,
+            explanation: "Світить (що?) сонце. Головний виконавець дії — підмет."
         },
         {
             question: "Визначте виділений член речення:<br>«Учні вчора <span class='highlight'>відвідали</span> музей».",
-            correctIndex: 1, // Присудок
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 1,
             explanation: "Учні (що зробили?) відвідали. Це дія підмета, отже, це присудок."
         },
         {
             question: "Визначте виділений член речення:<br>«Птахи повертаються <span class='highlight'>додому</span>».",
-            correctIndex: 3, // Обставина
-            explanation: "Повертаються (куди?) додому. Питання «куди?» визначає обставину місця."
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 3,
+            explanation: "Повертаються (куди?) додому. Вказує на напрямок дії — обставина."
         },
         {
-            question: "Який член речення відповідає на питання: <em>«що робить підмет? що з ним робиться? який він є? що він таке?»</em>?",
-            correctIndex: 1, // Присудок
-            explanation: "Саме так! Це граматичні питання присудка."
+            question: "Який член речення відповідає на питання: <em>«що робить підмет? який він є? що він таке?»</em>?",
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 1,
+            explanation: "Це синтаксичні питання присудка."
         },
         {
             question: "Визначте виділений член речення:<br>«Бабуся написала <span class='highlight'>листа</span> другові».",
-            correctIndex: 4, // Додаток
-            explanation: "Написала (кого? що?) листа. Питання знахідного відмінка (непрямий відмінок) визначає додаток."
+            options: ["Підмет", "Присудок", "Означення", "Обставина", "Додаток"],
+            correctIndex: 4,
+            explanation: "Написала (кого? що?) листа. Форма знахідного відмінка — додаток."
         }
     ];
 
-    const letters = ['А', 'Б', 'В', 'Г', 'Д'];
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
+    // База питань: Лексикологія (16 запитань)
+    const lexicologyQuestions = [
+        {
+            question: "Оберіть питомий український відповідник до іншомовного слова <strong>«консенсус»</strong>:",
+            options: ["запас", "згода", "чинник", "мірило", "поступ"],
+            correctIndex: 1,
+            explanation: "Консенсус — це згода, порозуміння у вирішенні питань."
+        },
+        {
+            question: "Яке українське слово відповідає запозиченому слову <strong>«фактор»</strong>?",
+            options: ["чинник", "мірило", "явище", "засновник", "поступ"],
+            correctIndex: 0,
+            explanation: "Фактор — це чинник (рушійна сила, причина будь-якого процесу)."
+        },
+        {
+            question: "Доберіть український відповідник до терміна <strong>«меридіан»</strong>:",
+            options: ["бігун", "водограй", "південник", "хідник", "запобіжний"],
+            correctIndex: 2,
+            explanation: "Меридіан українською мовою відповідає слову «південник» (а полюс — «бігун»)."
+        },
+        {
+            question: "Який питомий відповідник має іншомовне слово <strong>«куліси»</strong>?",
+            options: ["віче", "лаштунки", "рамена", "хорогви", "пернач"],
+            correctIndex: 1,
+            explanation: "Куліси — це театральні лаштунки."
+        },
+        {
+            question: "Оберіть рядок, де подано відповідник до запозиченого слова <strong>«превентивний»</strong>:",
+            options: ["підробний", "запобіжний", "усеосяжний", "доцільний", "непохитний"],
+            correctIndex: 1,
+            explanation: "Превентивний захід — це запобіжний захід."
+        },
+        {
+            question: "Яке запозичене слово має український відповідник <strong>«хідник»</strong>?",
+            options: ["тротуар", "менеджмент", "фундатор", "прогрес", "полюс"],
+            correctIndex: 0,
+            explanation: "Хідник — це питома українська назва тротуару."
+        },
+        {
+            question: "Слово <strong>«фіаско»</strong> можна замінити словами:",
+            options: ["згода, поступ", "невдача, провал", "чинник, причина", "мірило, критерій", "підробка, обман"],
+            correctIndex: 1,
+            explanation: "Фіаско — це повна невдача або провал."
+        },
+        {
+            question: "Укажіть рядок, у якому всі слова є <strong>історизмами</strong> (предмети зникли з ужитку):",
+            options: ["ланіти, перст, град", "десниця, чадо, піїт", "жупан, смерд, війт", "лицедій, тать, пря", "березіль, рать, зріти"],
+            correctIndex: 2,
+            explanation: "Жупан, смерд, війт — це історизми (реалії минулих епох). Інші рядки містять архаїзми (слова, що мають сучасні синоніми)."
+        },
+        {
+            question: "Що означає архаїзм <strong>«десниця»</strong>?",
+            options: ["ліва рука", "права рука", "подарунок", "зозуля", "щока"],
+            correctIndex: 1,
+            explanation: "Десниця — це права рука, а ліва рука — це шуйця."
+        },
+        {
+            question: "Що в давнину називали словом <strong>«ланіти»</strong>?",
+            options: ["очі", "плечі", "щоки", "пальці", "вуста"],
+            correctIndex: 2,
+            explanation: "Ланіти — це щоки (перст — палець, рамена — плечі)."
+        },
+        {
+            question: "Яке значення має давнє слово <strong>«лицедій»</strong>?",
+            options: ["злодій", "актор", "перекладач", "поет", "вершник"],
+            correctIndex: 1,
+            explanation: "Лицедій — застаріла назва актора (того, хто діє в різних образах/лицях)."
+        },
+        {
+            question: "Як у давнину називали <strong>перекладача</strong>?",
+            options: ["драгоман", "комонник", "тать", "піїт", "кушнір"],
+            correctIndex: 0,
+            explanation: "Драгоман — це перекладач, тлумач."
+        },
+        {
+            question: "Визначте значення архаїзму <strong>«рамена»</strong> у реченні:<br>«Він відчув тягар на своїх <em>раменах</em>»:",
+            options: ["долонях", "плечах", "грудях", "руках", "пальцях"],
+            correctIndex: 1,
+            explanation: "Рамена — це плечі."
+        },
+        {
+            question: "До якої категорії належать слова <strong>«печеніги, князь, пернач, віче, рало»</strong>?",
+            options: ["Архаїзми", "Історизми", "Неологізми", "Діалектизми", "Запозичення"],
+            correctIndex: 1,
+            explanation: "Це історизми, оскільки зникли самі реалії, посади та предмети побуту."
+        },
+        {
+            question: "Слово <strong>«тать»</strong> у давнину означало:",
+            options: ["поет", "дитина", "злодій", "воїн", "перекладач"],
+            correctIndex: 2,
+            explanation: "Тать — це злодій, грабіжник."
+        },
+        {
+            question: "Оберіть питомий український відповідник до слова <strong>«фундатор»</strong>:",
+            options: ["дослідник", "засновник", "охоронець", "керівник", "управитель"],
+            correctIndex: 1,
+            explanation: "Фундатор — засновник або меценат, що започаткував установу."
+        }
+    ];
 
-    const questionTextEl = document.getElementById('question-text');
-    const answersContainerEl = document.getElementById('answers-container');
-    const questionCounterEl = document.getElementById('question-counter');
-    const scoreCounterEl = document.getElementById('score-counter');
-    const progressBarEl = document.getElementById('progress-bar');
-    const feedbackEl = document.getElementById('feedback');
-    const btnNextEl = document.getElementById('btn-next');
-    const quizContainerEl = document.getElementById('quiz-container');
-    const resultsContainerEl = document.getElementById('results-container');
-    const finalScoreEl = document.getElementById('final-score');
-    const finalFeedbackEl = document.getElementById('final-feedback');
+    // Стан модулів тестування
+    const appState = {
+        syntax: {
+            questions: syntaxQuestions,
+            currentIndex: 0,
+            score: 0,
+            answered: false
+        },
+        lexicology: {
+            questions: lexicologyQuestions,
+            currentIndex: 0,
+            score: 0,
+            answered: false
+        }
+    };
 
-    function loadQuestion() {
-        answered = false;
+    // Перемикання вкладок
+    function switchTab(tabKey) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        if (tabKey === 'syntax') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('tab-syntax').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('tab-lexicology').classList.add('active');
+        }
+    }
+
+    // Завантаження запитання
+    function renderQuestion(moduleKey) {
+        const state = appState[moduleKey];
+        state.answered = false;
+
+        const q = state.questions[state.currentIndex];
+
+        // Елементи інтерфейсу
+        const counterEl = document.getElementById(`counter-${moduleKey}`);
+        const scoreEl = document.getElementById(`score-${moduleKey}`);
+        const barEl = document.getElementById(`bar-${moduleKey}`);
+        const qTextEl = document.getElementById(`qtext-${moduleKey}`);
+        const optionsEl = document.getElementById(`options-${moduleKey}`);
+        const feedbackEl = document.getElementById(`feedback-${moduleKey}`);
+        const btnNext = document.getElementById(`btn-next-${moduleKey}`);
+
         feedbackEl.style.display = 'none';
-        feedbackEl.className = 'feedback-box';
-        btnNextEl.style.display = 'none';
+        btnNext.style.display = 'none';
 
-        const q = quizData[currentQuestion];
+        counterEl.textContent = `Запитання ${state.currentIndex + 1} з ${state.questions.length}`;
+        scoreEl.textContent = `Бал: ${state.score}`;
+        barEl.style.width = `${(state.currentIndex / state.questions.length) * 100}%`;
 
-        // Оновлюємо лічильники
-        questionCounterEl.textContent = `Запитання ${currentQuestion + 1} з ${quizData.length}`;
-        scoreCounterEl.textContent = `Бал: ${score}`;
-        progressBarEl.style.width = `${((currentQuestion) / quizData.length) * 100}%`;
+        qTextEl.innerHTML = q.question;
+        optionsEl.innerHTML = '';
 
-        // Текст запитання
-        questionTextEl.innerHTML = q.question;
-
-        // Генерація кнопок відповідей
-        answersContainerEl.innerHTML = '';
-        defaultOptions.forEach((optionText, index) => {
+        q.options.forEach((optText, idx) => {
             const btn = document.createElement('button');
             btn.className = 'btn-answer';
-            btn.innerHTML = `<span class="btn-letter">${letters[index]}</span> <span>${optionText}</span>`;
-            btn.onclick = () => selectAnswer(index);
-            answersContainerEl.appendChild(btn);
+            btn.innerHTML = `<span class="btn-letter">${letters[idx]}</span><span>${optText}</span>`;
+            btn.onclick = () => handleAnswer(moduleKey, idx);
+            optionsEl.appendChild(btn);
         });
     }
 
-    function selectAnswer(selectedIndex) {
-        if (answered) return;
-        answered = true;
+    // Обробка вибору відповіді
+    function handleAnswer(moduleKey, selectedIndex) {
+        const state = appState[moduleKey];
+        if (state.answered) return;
+        state.answered = true;
 
-        const q = quizData[currentQuestion];
-        const buttons = answersContainerEl.querySelectorAll('.btn-answer');
-        
-        // Вимикаємо всі варіанти
+        const q = state.questions[state.currentIndex];
+        const optionsContainer = document.getElementById(`options-${moduleKey}`);
+        const buttons = optionsContainer.querySelectorAll('.btn-answer');
+        const feedbackEl = document.getElementById(`feedback-${moduleKey}`);
+        const btnNext = document.getElementById(`btn-next-${moduleKey}`);
+        const scoreEl = document.getElementById(`score-${moduleKey}`);
+
         buttons.forEach(btn => btn.disabled = true);
 
         if (selectedIndex === q.correctIndex) {
-            score++;
+            state.score++;
             buttons[selectedIndex].classList.add('correct');
             feedbackEl.className = 'feedback-box correct';
             feedbackEl.innerHTML = `<strong>Правильно!</strong> ${q.explanation}`;
@@ -520,52 +835,67 @@
             feedbackEl.innerHTML = `<strong>Помилка!</strong> ${q.explanation}`;
         }
 
-        scoreCounterEl.textContent = `Бал: ${score}`;
+        scoreEl.textContent = `Бал: ${state.score}`;
         feedbackEl.style.display = 'block';
-        btnNextEl.style.display = 'inline-block';
+        btnNext.style.display = 'inline-block';
 
-        if (currentQuestion === quizData.length - 1) {
-            btnNextEl.textContent = 'Подивитися результати';
+        if (state.currentIndex === state.questions.length - 1) {
+            btnNext.textContent = 'Переглянути результати';
         } else {
-            btnNextEl.textContent = 'Наступне запитання →';
+            btnNext.textContent = 'Наступне запитання →';
         }
     }
 
-    function nextQuestion() {
-        currentQuestion++;
-        if (currentQuestion < quizData.length) {
-            loadQuestion();
+    // Наступне питання
+    function nextQuestion(moduleKey) {
+        const state = appState[moduleKey];
+        state.currentIndex++;
+        if (state.currentIndex < state.questions.length) {
+            renderQuestion(moduleKey);
         } else {
-            showResults();
+            showFinalResults(moduleKey);
         }
     }
 
-    function showResults() {
-        quizContainerEl.style.display = 'none';
-        resultsContainerEl.style.display = 'block';
+    // Показ підсумків
+    function showFinalResults(moduleKey) {
+        const state = appState[moduleKey];
+        const quizBlock = document.getElementById(`quiz-${moduleKey}`);
+        const resultsBlock = document.getElementById(`results-${moduleKey}`);
+        const scoreText = document.getElementById(`final-score-${moduleKey}`);
+        const descText = document.getElementById(`final-desc-${moduleKey}`);
 
-        finalScoreEl.textContent = `${score} / ${quizData.length}`;
-        
-        const percentage = (score / quizData.length) * 100;
-        if (percentage === 100) {
-            finalFeedbackEl.textContent = 'Відмінно! Ви бездоганно володієте синтаксичним аналізом речення.';
-        } else if (percentage >= 75) {
-            finalFeedbackEl.textContent = 'Дуже добре! Ще кілька тренувань — і результат буде ідеальним.';
+        quizBlock.style.display = 'none';
+        resultsBlock.style.display = 'block';
+
+        scoreText.textContent = `${state.score} / ${state.questions.length}`;
+
+        const percentage = Math.round((state.score / state.questions.length) * 100);
+        if (percentage >= 90) {
+            descText.textContent = 'Бездоганний результат! Ви чудово засвоїли цей матеріал.';
+        } else if (percentage >= 70) {
+            descText.textContent = 'Добрий результат! Проте ще є кілька нюансів для повторення.';
         } else {
-            finalFeedbackEl.textContent = 'Варто ще раз переглянути таблицю вище і повторити питання членів речення.';
+            descText.textContent = 'Рекомендуємо переглянути довідкові таблиці вище і пройти тест ще раз.';
         }
     }
 
-    function restartQuiz() {
-        currentQuestion = 0;
-        score = 0;
-        quizContainerEl.style.display = 'block';
-        resultsContainerEl.style.display = 'none';
-        loadQuestion();
+    // Перезапуск
+    function restartQuiz(moduleKey) {
+        const state = appState[moduleKey];
+        state.currentIndex = 0;
+        state.score = 0;
+        state.answered = false;
+
+        document.getElementById(`quiz-${moduleKey}`).style.display = 'block';
+        document.getElementById(`results-${moduleKey}`).style.display = 'none';
+
+        renderQuestion(moduleKey);
     }
 
-    // Старт тренажера
-    loadQuestion();
+    // Старт обох модулів при завантаженні
+    renderQuestion('syntax');
+    renderQuestion('lexicology');
 </script>
 
 </body>
