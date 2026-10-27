@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Члени речення (Головні та другорядні)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --neutral-dark: #1e293b;
+            --neutral-muted: #64748b;
+            --card-bg: #ffffff;
+            --body-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--neutral-dark);
+            line-height: 1.6;
+            padding: 24px 16px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--neutral-dark);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--neutral-muted);
+            font-size: 1rem;
+        }
+
+        /* Довідкова таблиця / картки */
+        .reference-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 28px;
+        }
+
+        .reference-card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 680px) {
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rule-group {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .rule-group h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--neutral-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rule-group ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rule-group li {
+            font-size: 0.88rem;
+            color: #334155;
+        }
+
+        .rule-group strong {
+            color: #0f172a;
+        }
+
+        /* Блок тесту */
+        .test-wrapper {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--neutral-muted);
+            text-transform: uppercase;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--neutral-dark);
+            margin-bottom: 24px;
+        }
+
+        .question-title .highlight {
+            background: #fef08a;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            color: #854d0e;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .answers-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-answer {
+            width: 100%;
+            text-align: left;
+            padding: 14px 18px;
+            border: 1.5px solid var(--border-color);
+            background-color: #ffffff;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--neutral-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-answer:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .btn-answer:disabled {
+            cursor: default;
+        }
+
+        .btn-letter {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        /* Стани відповідей */
+        .btn-answer.correct {
+            border-color: var(--success);
+            background-color: var(--success-light);
+            color: #065f46;
+        }
+
+        .btn-answer.correct .btn-letter {
+            background-color: var(--success);
+            color: #ffffff;
+        }
+
+        .btn-answer.incorrect {
+            border-color: var(--danger);
+            background-color: var(--danger-light);
+            color: #991b1b;
+        }
+
+        .btn-answer.incorrect .btn-letter {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+
+        /* Пояснення */
+        .feedback-box {
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-box.correct {
+            background-color: var(--success-light);
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .feedback-box.incorrect {
+            background-color: var(--danger-light);
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        /* Результати */
+        .results-view {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 12px 0;
+        }
+
+        .results-desc {
+            font-size: 1.1rem;
+            color: var(--neutral-muted);
+            margin-bottom: 28px;
+        }
+
+        .btn-restart {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-restart:hover {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Граматичний тренажер</h1>
+        <p>Головні та другорядні члени речення</p>
+    </header>
+
+    <!-- Довідковий блок -->
+    <div class="reference-card">
+        <h2>📚 Довідкова таблиця</h2>
+        <div class="rules-grid">
+            <div class="rule-group">
+                <h3>Головні члени</h3>
+                <ul>
+                    <li><strong>Підмет:</strong> <em>хто? що?</em></li>
+                    <li><strong>Присудок:</strong> <em>що робить підмет? що з ним робиться? який він є? що він таке?</em></li>
+                </ul>
+            </div>
+            <div class="rule-group">
+                <h3>Другорядні члени</h3>
+                <ul>
+                    <li><strong>Означення:</strong> <em>який? чий? котрий?</em></li>
+                    <li><strong>Обставина:</strong> <em>як? де? куди? звідки? коли? чому?</em></li>
+                    <li><strong>Додаток:</strong> питання відмінків, крім називного (<em>кого? чого? кому? чому? ким? чим? на кому? на чому?</em>)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Інтерактивний тест -->
+    <div class="test-wrapper">
+        <div id="quiz-container">
+            <div class="progress-header">
+                <span id="question-counter">Запитання 1 з 8</span>
+                <span id="score-counter">Бал: 0</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div class="question-title" id="question-text">
+                Завантаження запитання...
+            </div>
+
+            <div class="answers-grid" id="answers-container">
+                <!-- Кнопки генеруються за допомогою JS -->
+            </div>
+
+            <div class="feedback-box" id="feedback"></div>
+
+            <div class="action-container">
+                <button class="btn-next" id="btn-next" onclick="nextQuestion()">Наступне запитання →</button>
+            </div>
+        </div>
+
+        <!-- Екран завершення -->
+        <div class="results-view" id="results-container">
+            <h2>Тест завершено! 🎉</h2>
+            <div class="results-score" id="final-score">0 / 8</div>
+            <div class="results-desc" id="final-feedback">Чудова спроба!</div>
+            <button class="btn-restart" onclick="restartQuiz()">Пройти знову</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 5 стандартних варіантів для всіх запитань
+    const defaultOptions = [
+        "Підмет",
+        "Присудок",
+        "Означення",
+        "Обставина",
+        "Додаток"
+    ];
+
+    // Набір питань (теорія + практика)
+    const quizData = [
+        {
+            question: "На які питання відповідає <strong>Додаток</strong>?",
+            correctIndex: 4, // Додаток
+            explanation: "Правильно! Додаток відповідає на питання непрямих відмінків: кого? чого? кому? чому? ким? чим? на кому? на чому?"
+        },
+        {
+            question: "До якого члена речення належать питання <em>«де? куди? звідки? коли? як? чому?»</em>?",
+            correctIndex: 3, // Обставина
+            explanation: "Точно! Питання де? куди? звідки? коли? як? чому? — це питання обставини."
+        },
+        {
+            question: "Визначте виділений член речення:<br>«Хлопець читає <span class='highlight'>цікаву</span> книжку».",
+            correctIndex: 2, // Означення
+            explanation: "Книжку (яку?) цікаву. Питання «яку?» вказує на означення."
+        },
+        {
+            question: "Визначте виділений член речення:<br>«<span class='highlight'>Сонце</span> яскраво світить над містом».",
+            correctIndex: 0, // Підмет
+            explanation: "(Що?) сонце світить. Сонце — це підмет, що виконує дію."
+        },
+        {
+            question: "Визначте виділений член речення:<br>«Учні вчора <span class='highlight'>відвідали</span> музей».",
+            correctIndex: 1, // Присудок
+            explanation: "Учні (що зробили?) відвідали. Це дія підмета, отже, це присудок."
+        },
+        {
+            question: "Визначте виділений член речення:<br>«Птахи повертаються <span class='highlight'>додому</span>».",
+            correctIndex: 3, // Обставина
+            explanation: "Повертаються (куди?) додому. Питання «куди?» визначає обставину місця."
+        },
+        {
+            question: "Який член речення відповідає на питання: <em>«що робить підмет? що з ним робиться? який він є? що він таке?»</em>?",
+            correctIndex: 1, // Присудок
+            explanation: "Саме так! Це граматичні питання присудка."
+        },
+        {
+            question: "Визначте виділений член речення:<br>«Бабуся написала <span class='highlight'>листа</span> другові».",
+            correctIndex: 4, // Додаток
+            explanation: "Написала (кого? що?) листа. Питання знахідного відмінка (непрямий відмінок) визначає додаток."
+        }
+    ];
+
+    const letters = ['А', 'Б', 'В', 'Г', 'Д'];
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionTextEl = document.getElementById('question-text');
+    const answersContainerEl = document.getElementById('answers-container');
+    const questionCounterEl = document.getElementById('question-counter');
+    const scoreCounterEl = document.getElementById('score-counter');
+    const progressBarEl = document.getElementById('progress-bar');
+    const feedbackEl = document.getElementById('feedback');
+    const btnNextEl = document.getElementById('btn-next');
+    const quizContainerEl = document.getElementById('quiz-container');
+    const resultsContainerEl = document.getElementById('results-container');
+    const finalScoreEl = document.getElementById('final-score');
+    const finalFeedbackEl = document.getElementById('final-feedback');
+
+    function loadQuestion() {
+        answered = false;
+        feedbackEl.style.display = 'none';
+        feedbackEl.className = 'feedback-box';
+        btnNextEl.style.display = 'none';
+
+        const q = quizData[currentQuestion];
+
+        // Оновлюємо лічильники
+        questionCounterEl.textContent = `Запитання ${currentQuestion + 1} з ${quizData.length}`;
+        scoreCounterEl.textContent = `Бал: ${score}`;
+        progressBarEl.style.width = `${((currentQuestion) / quizData.length) * 100}%`;
+
+        // Текст запитання
+        questionTextEl.innerHTML = q.question;
+
+        // Генерація кнопок відповідей
+        answersContainerEl.innerHTML = '';
+        defaultOptions.forEach((optionText, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-answer';
+            btn.innerHTML = `<span class="btn-letter">${letters[index]}</span> <span>${optionText}</span>`;
+            btn.onclick = () => selectAnswer(index);
+            answersContainerEl.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(selectedIndex) {
+        if (answered) return;
+        answered = true;
+
+        const q = quizData[currentQuestion];
+        const buttons = answersContainerEl.querySelectorAll('.btn-answer');
+        
+        // Вимикаємо всі варіанти
+        buttons.forEach(btn => btn.disabled = true);
+
+        if (selectedIndex === q.correctIndex) {
+            score++;
+            buttons[selectedIndex].classList.add('correct');
+            feedbackEl.className = 'feedback-box correct';
+            feedbackEl.innerHTML = `<strong>Правильно!</strong> ${q.explanation}`;
+        } else {
+            buttons[selectedIndex].classList.add('incorrect');
+            buttons[q.correctIndex].classList.add('correct');
+            feedbackEl.className = 'feedback-box incorrect';
+            feedbackEl.innerHTML = `<strong>Помилка!</strong> ${q.explanation}`;
+        }
+
+        scoreCounterEl.textContent = `Бал: ${score}`;
+        feedbackEl.style.display = 'block';
+        btnNextEl.style.display = 'inline-block';
+
+        if (currentQuestion === quizData.length - 1) {
+            btnNextEl.textContent = 'Подивитися результати';
+        } else {
+            btnNextEl.textContent = 'Наступне запитання →';
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizContainerEl.style.display = 'none';
+        resultsContainerEl.style.display = 'block';
+
+        finalScoreEl.textContent = `${score} / ${quizData.length}`;
+        
+        const percentage = (score / quizData.length) * 100;
+        if (percentage === 100) {
+            finalFeedbackEl.textContent = 'Відмінно! Ви бездоганно володієте синтаксичним аналізом речення.';
+        } else if (percentage >= 75) {
+            finalFeedbackEl.textContent = 'Дуже добре! Ще кілька тренувань — і результат буде ідеальним.';
+        } else {
+            finalFeedbackEl.textContent = 'Варто ще раз переглянути таблицю вище і повторити питання членів речення.';
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        quizContainerEl.style.display = 'block';
+        resultsContainerEl.style.display = 'none';
+        loadQuestion();
+    }
+
+    // Старт тренажера
+    loadQuestion();
+</script>
+
+</body>
+</html>
